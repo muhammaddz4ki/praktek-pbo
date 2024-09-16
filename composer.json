@@ -1,0 +1,26 @@
+{
+    "name": "muham/tes_composer",
+    "description": "belajar_composer",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "muhammaddz4ki",
+            "email": "muhammadikazd@gmail.com"
+        }
+    ],
+    "scripts": {
+        "server": "php -S localhost:8080"
+    },
+
+    "require": {
+        "monolog/monolog": "^3.7",
+        "nesbot/carbon": "^3.8",
+        "guzzlehttp/guzzle": "^7.9",
+        "tecnickcom/tcpdf": "^6.7",
+        "twig/twig": "^3.14",
+        "vlucas/phpdotenv": "^5.6",
+        "symfony/var-dumper": "^7.1",
+        "ramsey/uuid": "^4.7"
+    }
+}

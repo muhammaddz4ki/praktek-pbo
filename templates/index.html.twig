@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Tugas dengan Pengingat Tenggat Waktu</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <style>
+        /* Tambahan CSS untuk waktu */
+        .current-time {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daftar Tugas dengan Pengingat Tenggat Waktu</h1>
+
+        <!-- Waktu Jakarta Saat Ini -->
+        <div class="current-time">
+            <p>Waktu Jakarta saat ini: <span id="current-time">{{ current_time }}</span></p>
+        </div>
+
+        <!-- Notifikasi jika ada -->
+        {% if flash_message %}
+            <div class="flash-message">
+                {{ flash_message }}
+            </div>
+        {% endif %}
+
+        <!-- Penjelasan Warna -->
+        <div class="color-legend">
+            <p><span class="urgent"></span> Mendekati tenggat waktu (kurang dari 2 hari tersisa)</p>
+            <p><span class="warning"></span> Mendekati tenggat waktu (5 hari atau kurang tersisa)</p>
+            <p><span class="default"></span> Tugas yang tidak mendekati tenggat waktu</p>
+        </div>
+
+        <form method="POST" action="/" class="task-form">
+            <input type="text" name="task" placeholder="Masukkan tugas baru" required>
+            <input type="date" name="deadline" required>
+            <input type="datetime-local" name="reminder"> <!-- Input untuk pengingat -->
+            <button type="submit" class="btn">Tambah Tugas</button>
+        </form>
+
+        <h2>Tugas Anda</h2>
+        <ul class="task-list">
+            {% for uuid, taskInfo in tasks %}
+                <li class="task-item {% if taskInfo.daysRemaining < 2 %}urgent{% elseif taskInfo.daysRemaining <= 5 %}warning{% else %}default{% endif %}">
+                    {{ taskInfo.task }} (Tenggat: {{ taskInfo.deadline }} | {{ taskInfo.daysRemaining }} hari tersisa)
+                    {% if taskInfo.reminder %}
+                        <p>Pengingat: {{ taskInfo.reminder }}</p>
+                    {% endif %}
+                    <form method="POST" action="/" class="inline-form">
+                        <input type="hidden" name="delete" value="{{ uuid }}">
+                        <button type="submit" class="btn delete-btn">Hapus</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>Tidak ada tugas.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Tambahkan JavaScript untuk memperbarui waktu -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                timeZone: 'Asia/Jakarta', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            };
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('id-ID', options);
+        }
+
+        setInterval(updateTime, 1000); // Update setiap detik
+        updateTime(); // Initial call to set time immediately
+    </script>
+</body>
+</html>
